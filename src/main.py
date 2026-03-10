@@ -3,50 +3,13 @@ from tkinter import *
 import time
 from tkinter import messagebox
 
-from module.coords import Coords
-
-def within_x(co1, co2):
-    if (co1.x1 > co2.x1 and co1.x1 < co2.x2) \
-        or (co1.x2 > co2.x1 and co1.x2 < co2.x2) \
-        or (co2.x1 > co1.x1 and co2.x1 < co1.x2) \
-        or (co2.x2 > co1.x1 and co2.x2 < co1.x1):
-        return True
-    else:
-        return False
-
-def within_y(co1, co2):
-    if (co1.y1 > co2.y1 and co1.y1 < co2.y2) \
-        or (co1.y2 > co2.y1 and co1.y2 < co2.y2) \
-        or (co2.y1 > co1.y1 and co2.y1 < co1.y2) \
-        or (co2.y2 > co1.y1 and co2.y2 < co1.y1):
-        return True
-    else:
-        return False
-
-def collided_left(co1, co2):
-    if within_y(co1, co2):
-        if co1.x1 <= co2.x2 and co1.x1 >= co2.x1:
-            return True
-    return False
-
-def collided_right(co1, co2):
-    if within_y(co1, co2):
-        if co1.x2 >= co2.x1 and co1.x2 <= co2.x2:
-            return True
-    return False
-
-def collided_top(co1, co2):
-    if within_x(co1, co2):
-        if co1.y1 <= co2.y2 and co1.y1 >= co2.y1:
-            return True
-    return False
-
-def collided_bottom(y, co1, co2):
-    if within_x(co1, co2):
-        y_calc = co1.y2 + y
-        if y_calc >= co2.y1 and y_calc <= co2.y2:
-            return True
-    return False
+from game.models import Coords
+from game.collision import (
+    collided_bottom,
+    collided_left,
+    collided_right,
+    collided_top,
+)
 
 class Game:
     def __init__(self, title, size, image):
@@ -275,16 +238,16 @@ class StickFigureSprite(Sprite):
 
         self.game.canvas.move(self.image, self.x, self.y)
 
-g = Game("Dinosaur Escape Room", 500, "assets/background.gif")
+if __name__ == "__main__":
+    g = Game("Dinosaur Escape Room", 500, "assets/background.gif")
 
-g.add_sprite(Bar(g, "assets/bar1.gif",   0, 490, 100, 10))
-g.add_sprite(Bar(g, "assets/bar1.gif", 110, 440, 100, 10))
-g.add_sprite(Bar(g, "assets/bar1.gif", 220, 410, 100, 10))
-g.add_sprite(Bar(g, "assets/bar1.gif", 330, 390, 100, 10))
-g.add_sprite(Bar(g, "assets/bar1.gif", 400, 350, 100, 10))
-g.add_sprite(Item(g, "assets/item/고기.png", 300, 300, 30, 30))
-g.add_sprite(HelthBar(g))
-g.add_sprite(StickFigureSprite(g))
+    g.add_sprite(Bar(g, "assets/bar1.gif",   0, 490, 100, 10))
+    g.add_sprite(Bar(g, "assets/bar1.gif", 110, 440, 100, 10))
+    g.add_sprite(Bar(g, "assets/bar1.gif", 220, 410, 100, 10))
+    g.add_sprite(Bar(g, "assets/bar1.gif", 330, 390, 100, 10))
+    g.add_sprite(Bar(g, "assets/bar1.gif", 400, 350, 100, 10))
+    g.add_sprite(Item(g, "assets/item/고기.png", 300, 300, 30, 30))
+    g.add_sprite(HelthBar(g))
+    g.add_sprite(StickFigureSprite(g))
 
-g.mainloop()
-   
+    g.mainloop()
