@@ -113,8 +113,8 @@ class Item(Sprite):
 class HelthBar(Sprite):
     def __init__(self, game):
         Sprite.__init__(self, game, "HP")
-        self.image = PhotoImage(file="img/helth.png")
-        self.image0 = PhotoImage(file="img/helth0.png")
+        self.image = PhotoImage(file="assets/helth.png")
+        self.image0 = PhotoImage(file="assets/helth0.png")
         self.game.canvas.create_text(10, 5, text="HP", anchor='nw', fill='red', font=('Arial', 12, 'bold'))
         self.reset()
 
@@ -162,8 +162,8 @@ class StickFigureSprite(Sprite):
 
     def load_images(self):
         self.images = {
-            "left": [ PhotoImage(file="img/figure/{}/L{}.png".format(self.figure_names[self.figure_name], i)) for i in range(1, 4) ],
-            "right": [ PhotoImage(file="img/figure/{}/R{}.png".format(self.figure_names[self.figure_name], i)) for i in range(1, 4) ]
+            "left": [ PhotoImage(file="assets/figure/{}/L{}.png".format(self.figure_names[self.figure_name], i)) for i in range(1, 4) ],
+            "right": [ PhotoImage(file="assets/figure/{}/R{}.png".format(self.figure_names[self.figure_name], i)) for i in range(1, 4) ]
         }
 
     def escape(self, evt):
@@ -275,14 +275,14 @@ class StickFigureSprite(Sprite):
 
         self.game.canvas.move(self.image, self.x, self.y)
 
-g = Game("Dinosaur Escape Room", 500, "img/background.gif")
+g = Game("Dinosaur Escape Room", 500, "assets/background.gif")
 
-g.add_sprite(Bar(g, "img/bar1.gif",   0, 490, 100, 10))
-g.add_sprite(Bar(g, "img/bar1.gif", 110, 440, 100, 10))
-g.add_sprite(Bar(g, "img/bar1.gif", 220, 410, 100, 10))
-g.add_sprite(Bar(g, "img/bar1.gif", 330, 390, 100, 10))
-g.add_sprite(Bar(g, "img/bar1.gif", 400, 350, 100, 10))
-g.add_sprite(Item(g, "img/item/고기.png", 300, 300, 30, 30))
+g.add_sprite(Bar(g, "assets/bar1.gif",   0, 490, 100, 10))
+g.add_sprite(Bar(g, "assets/bar1.gif", 110, 440, 100, 10))
+g.add_sprite(Bar(g, "assets/bar1.gif", 220, 410, 100, 10))
+g.add_sprite(Bar(g, "assets/bar1.gif", 330, 390, 100, 10))
+g.add_sprite(Bar(g, "assets/bar1.gif", 400, 350, 100, 10))
+g.add_sprite(Item(g, "assets/item/고기.png", 300, 300, 30, 30))
 g.add_sprite(HelthBar(g))
 g.add_sprite(StickFigureSprite(g))
 
