@@ -1,0 +1,2 @@
+# No external Python packages are required.
+# This project uses Python standard library modules (tkinter, time, math).
