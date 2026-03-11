@@ -3,22 +3,32 @@ from tkinter import *
 import time
 from tkinter import messagebox
 
-from game.models import Coords
-from game.collision import (
+from dino_escape_room.utils.resource_path import resource_path
+from dino_escape_room.models import Coords
+from dino_escape_room.collision import (
     collided_bottom,
     collided_left,
     collided_right,
     collided_top,
 )
 
+class Sprite:
+    def __init__(self, game, type=None):
+        self.game = game
+        self.type = type
+        self.coordinateds = None
+    def move(self):
+        pass
+    def coords(self):
+        return self.coordinateds
+
 class Game:
     def __init__(self, title, size, image):
         self.tk = Tk()
         self.tk.title(title)
-        self.tk.resizable(0, 0)
+        self.tk.resizable(False, False)
         self.tk.wm_attributes("-topmost", 1)
-        self.width = size
-        self.height = size
+        self.width, self.height = size
         self.canvas = Canvas(self.tk, width=self.width, height=self.height, highlightthickness=0)
         self.canvas.pack()
         self.tk.update()
@@ -49,16 +59,6 @@ class Game:
         if sprite.type == "HP": self.hp = sprite
         self.sprites.append(sprite)
 
-class Sprite:
-    def __init__(self, game, type=None):
-        self.game = game
-        self.type = type
-        self.coordinateds = None
-    def move(self):
-        pass
-    def coords(self):
-        return self.coordinateds
-
 class Bar(Sprite):
     def __init__(self, game, image, x, y, width, height):
         Sprite.__init__(self, game)
@@ -76,8 +76,8 @@ class Item(Sprite):
 class HelthBar(Sprite):
     def __init__(self, game):
         Sprite.__init__(self, game, "HP")
-        self.image = PhotoImage(file="assets/helth.png")
-        self.image0 = PhotoImage(file="assets/helth0.png")
+        self.image = PhotoImage(file=resource_path("helth.png"))
+        self.image0 = PhotoImage(file=resource_path("helth0.png"))
         self.game.canvas.create_text(10, 5, text="HP", anchor='nw', fill='red', font=('Arial', 12, 'bold'))
         self.reset()
 
@@ -125,8 +125,8 @@ class StickFigureSprite(Sprite):
 
     def load_images(self):
         self.images = {
-            "left": [ PhotoImage(file="assets/figure/{}/L{}.png".format(self.figure_names[self.figure_name], i)) for i in range(1, 4) ],
-            "right": [ PhotoImage(file="assets/figure/{}/R{}.png".format(self.figure_names[self.figure_name], i)) for i in range(1, 4) ]
+            "left": [ PhotoImage(file=resource_path("figure", self.figure_names[self.figure_name], "L{}.png".format(i))) for i in range(1, 4) ],
+            "right": [ PhotoImage(file=resource_path("figure", self.figure_names[self.figure_name], "R{}.png".format(i))) for i in range(1, 4) ]
         }
 
     def escape(self, evt):
@@ -239,14 +239,18 @@ class StickFigureSprite(Sprite):
         self.game.canvas.move(self.image, self.x, self.y)
 
 if __name__ == "__main__":
-    g = Game("Dinosaur Escape Room", 500, "assets/background.gif")
+    img_bg = resource_path("background.gif")
+    img_bar = resource_path("bar1.gif")
+    img_item = resource_path("item", "고기.png")
 
-    g.add_sprite(Bar(g, "assets/bar1.gif",   0, 490, 100, 10))
-    g.add_sprite(Bar(g, "assets/bar1.gif", 110, 440, 100, 10))
-    g.add_sprite(Bar(g, "assets/bar1.gif", 220, 410, 100, 10))
-    g.add_sprite(Bar(g, "assets/bar1.gif", 330, 390, 100, 10))
-    g.add_sprite(Bar(g, "assets/bar1.gif", 400, 350, 100, 10))
-    g.add_sprite(Item(g, "assets/item/고기.png", 300, 300, 30, 30))
+    g = Game("Dinosaur Escape Room", (1000, 500), img_bg)
+
+    g.add_sprite(Bar(g, img_bar,   0, 490, 100, 10))
+    g.add_sprite(Bar(g, img_bar, 110, 440, 100, 10))
+    g.add_sprite(Bar(g, img_bar, 220, 410, 100, 10))
+    g.add_sprite(Bar(g, img_bar, 330, 390, 100, 10))
+    g.add_sprite(Bar(g, img_bar, 400, 350, 100, 10))
+    g.add_sprite(Item(g, img_item, 300, 300, 30, 30))
     g.add_sprite(HelthBar(g))
     g.add_sprite(StickFigureSprite(g))
 
