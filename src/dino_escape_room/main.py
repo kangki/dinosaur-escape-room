@@ -3,6 +3,7 @@ from tkinter import *
 import time
 from tkinter import messagebox
 
+from dino_escape_room.config import get_env_bool, get_env_int, load_dotenv
 from dino_escape_room.utils.resource_path import resource_path
 from dino_escape_room.models import Coords
 from dino_escape_room.collision import (
@@ -23,12 +24,13 @@ class Sprite:
         return self.coordinateds
 
 class Game:
-    def __init__(self, title, size, image):
+    def __init__(self, title, size, image, topmost=True, frame_delay=0.01):
         self.tk = Tk()
         self.tk.title(title)
         self.tk.resizable(False, False)
-        self.tk.wm_attributes("-topmost", 1)
+        self.tk.wm_attributes("-topmost", 1 if topmost else 0)
         self.width, self.height = size
+        self.frame_delay = frame_delay
         self.canvas = Canvas(self.tk, width=self.width, height=self.height, highlightthickness=0)
         self.canvas.pack()
         self.tk.update()
@@ -53,7 +55,7 @@ class Game:
                 sprite.move()
             self.tk.update_idletasks()
             self.tk.update()
-            time.sleep(0.01)
+            time.sleep(self.frame_delay)
 
     def add_sprite(self, sprite:Sprite):
         if sprite.type == "HP": self.hp = sprite
@@ -239,11 +241,19 @@ class StickFigureSprite(Sprite):
         self.game.canvas.move(self.image, self.x, self.y)
 
 def main():
+    load_dotenv()
+    width = get_env_int("GAME_WIDTH", 1000)
+    height = get_env_int("GAME_HEIGHT", 500)
+    fps = get_env_int("GAME_FPS", 100)
+    if fps <= 0:
+        fps = 100
+    topmost = get_env_bool("WINDOW_TOPMOST", True)
+
     img_bg = resource_path("background.gif")
     img_bar = resource_path("bar1.gif")
     img_item = resource_path("item", "고기.png")
 
-    g = Game("Dinosaur Escape Room", (1000, 500), img_bg)
+    g = Game("Dinosaur Escape Room", (width, height), img_bg, topmost=topmost, frame_delay=1 / fps)
 
     g.add_sprite(Bar(g, img_bar,   0, 490, 100, 10))
     g.add_sprite(Bar(g, img_bar, 110, 440, 100, 10))

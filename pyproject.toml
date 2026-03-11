@@ -23,6 +23,13 @@ dino-escape = "dino_escape_room.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+dino_escape_room = ["resources/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -46,3 +46,33 @@ dino-escape
 ```powershell
 python -m dino_escape_room.main
 ```
+
+## .env configuration
+
+1. Copy `.env.example` to `.env`.
+2. Edit values as needed.
+3. Run the app.
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Supported variables:
+
+- `GAME_WIDTH`: window width (default: `1000`)
+- `GAME_HEIGHT`: window height (default: `500`)
+- `GAME_FPS`: loop FPS (default: `100`)
+- `WINDOW_TOPMOST`: `true/false` (default: `true`)
+
+## Build executable (PyInstaller)
+
+```powershell
+python -m pip install -e ".[build]"
+pyinstaller dino_escape_room.spec --noconfirm --clean
+```
+
+Build output:
+
+- `dist\DinosaurEscapeRoom.exe`
+
+If you want to override runtime config for the built exe, create `.env` in the same directory as the exe.
