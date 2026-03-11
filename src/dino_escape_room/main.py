@@ -238,7 +238,7 @@ class StickFigureSprite(Sprite):
 
         self.game.canvas.move(self.image, self.x, self.y)
 
-if __name__ == "__main__":
+def main():
     img_bg = resource_path("background.gif")
     img_bar = resource_path("bar1.gif")
     img_item = resource_path("item", "고기.png")
@@ -255,3 +255,7 @@ if __name__ == "__main__":
     g.add_sprite(StickFigureSprite(g))
 
     g.mainloop()
+
+
+if __name__ == "__main__":
+    main()
