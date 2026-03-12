@@ -1,7 +1,10 @@
 from math import ceil
-from tkinter import *
 import time
-from tkinter import messagebox
+from tkinter import (
+	Canvas, 
+	PhotoImage, 
+	Tk
+)
 
 from dino_escape_room.config import get_env_bool, get_env_int, load_dotenv
 from dino_escape_room.utils.resource_path import resource_path
@@ -47,7 +50,17 @@ class Game:
             for y in range(0, len_h):
                 self.canvas.create_image(x * w, y * h, image=self.bg, anchor='nw')
 
-        print("{}x{} images needed / game start ...".format(len_w, len_h))
+        self.tk.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+        print("{}x{} images needed".format(len_w, len_h))
+        print("game start ...")
+
+    def close(self):
+        print("game close ...")
+        self.running = False
+
+    def on_closing(self):
+        self.close()
 
     def mainloop(self):
         while self.running:
@@ -86,10 +99,7 @@ class HelthBar(Sprite):
     def move(self):
         if time.time() - self.last_time > 2:
             if(self.hp == 0):
-                if messagebox.askyesno("확인", "HP가 0이 되었습니다.다시 시작하시겠습니까?"):
-                    self.reset()
-                else:
-                    self.game.running = False
+                self.game.close()
                 return
 
             self.last_time = time.time()
@@ -132,8 +142,7 @@ class StickFigureSprite(Sprite):
         }
 
     def escape(self, evt):
-        if messagebox.askyesno("확인", "종료하시겠습니까?"):
-            self.game.running = False
+        self.game.close()
     def turn_left(self, evt):
         if self.y == 0:
             self.x = -2
@@ -150,19 +159,21 @@ class StickFigureSprite(Sprite):
             self.jump_count = 0
 
     def animate(self):
-        if self.x != 0:
-            if self.y == 0:
-                if time.time() - self.last_time > 0.1:
-                    self.last_time = time.time()
-                    self.current_image += self.current_image_add
-                if self.current_image >= 2: 
-                    self.current_image_add = -1
-                if self.current_image <= 0: 
-                    self.current_image_add = 1
+        if self.x == 0:
+            return
 
-            count = self.current_image if self.y == 0 else 2
-            way = "left" if self.x < 0 else "right"
-            self.game.canvas.itemconfig(self.image, image=self.images[way][count])
+        if self.y == 0:
+            if time.time() - self.last_time > 0.1:
+                self.last_time = time.time()
+                self.current_image += self.current_image_add
+            if self.current_image >= 2: 
+                self.current_image_add = -1
+            if self.current_image <= 0: 
+                self.current_image_add = 1
+
+        count = self.current_image if self.y == 0 else 2
+        way = "left" if self.x < 0 else "right"
+        self.game.canvas.itemconfig(self.image, image=self.images[way][count])
 
     def coords(self):
         xy = self.game.canvas.coords(self.image)
@@ -244,10 +255,9 @@ def main():
     load_dotenv()
     width = get_env_int("GAME_WIDTH", 1000)
     height = get_env_int("GAME_HEIGHT", 500)
-    fps = get_env_int("GAME_FPS", 100)
-    if fps <= 0:
-        fps = 100
     topmost = get_env_bool("WINDOW_TOPMOST", True)
+    fps = get_env_int("GAME_FPS", 100)
+    fps = 100 if fps <= 0 else fps
 
     img_bg = resource_path("background.gif")
     img_bar = resource_path("bar1.gif")
